@@ -38,3 +38,18 @@ const mapStateToProps = (state: RootState) => {
 };
 
 export default connect(mapStateToProps)(App);
+
+// const mapStateToProps = (state) => {
+//   return {
+//     count: state.counter.value
+//   };
+// };
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     increment: () => dispatch(increment()),
+//     decrement: () => dispatch(decrement())
+//   };
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
