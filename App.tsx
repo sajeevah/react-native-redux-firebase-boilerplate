@@ -1,31 +1,31 @@
-import * as React from 'react';
+import React from 'react';
 import {Button, StyleSheet, Text, View} from 'react-native';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {changeCount} from './src/actions/counts';
 
 class App extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      count: 0,
+    };
+  }
+
   decrementCount() {
-    console.log('sajeeva : ', this.props);
-    let {count, actions} = this.props;
-    count.count--;
-    // actions.changeCount(count.count);
+    this.setState((prevState: any) => ({
+      count: prevState.count - 1,
+    }));
   }
 
   incrementCount() {
-    console.log('hasith : ', this.props);
-    let {count, actions} = this.props;
-    count.count++;
-    // actions.changeCount(count.count);
+    this.setState((prevState: any) => ({
+      count: prevState.count + 1,
+    }));
   }
 
   render() {
-    const {count} = this.props;
-
     return (
-      <View styles={styles.container}>
+      <View style={styles.container}>
         <Button title="increment" onPress={() => this.incrementCount()} />
-        <Text>{count.count}</Text>
+        <Text>{this.state.count}</Text>
         <Button title="decrement" onPress={() => this.decrementCount()} />
       </View>
     );
@@ -40,12 +40,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: any) => state.count;
-
-const ActionCreators = Object.assign({}, changeCount);
-
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: bindActionCreators(ActionCreators, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
