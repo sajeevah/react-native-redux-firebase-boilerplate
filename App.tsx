@@ -1,31 +1,22 @@
 import React from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
-
+import { Button, StyleSheet, Text, View } from 'react-native';
+import { decrement, increment } from './src/features/counter/counterSlice';
+import { connect } from 'react-redux';
+import { RootState } from './src/app/store';
 class App extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      count: 0,
-    };
-  }
+  incrementCount = () => {
+    this.props.dispatch(increment());
+  };
 
-  decrementCount() {
-    this.setState((prevState: any) => ({
-      count: prevState.count - 1,
-    }));
-  }
-
-  incrementCount() {
-    this.setState((prevState: any) => ({
-      count: prevState.count + 1,
-    }));
-  }
+  decrementCount = () => {
+    this.props.dispatch(decrement());
+  };
 
   render() {
     return (
       <View style={styles.container}>
         <Button title="increment" onPress={() => this.incrementCount()} />
-        <Text>{this.state.count}</Text>
+        <Text>{this.props.count}</Text>
         <Button title="decrement" onPress={() => this.decrementCount()} />
       </View>
     );
@@ -40,4 +31,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+const mapStateToProps = (state: RootState) => {
+  return {
+    count: state.counter.value,
+  };
+};
+
+export default connect(mapStateToProps)(App);
