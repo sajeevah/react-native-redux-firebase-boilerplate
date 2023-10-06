@@ -1,6 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { Button, SafeAreaView, StyleSheet, TextInput, View } from 'react-native';
+import {
+  Button,
+  SafeAreaView,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 import { decrement, increment } from './src/features/counter/counterSlice';
 import { connect } from 'react-redux';
 import { RootState } from './src/app/store';
