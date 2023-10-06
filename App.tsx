@@ -1,9 +1,18 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, TextInput, View } from 'react-native';
 import { decrement, increment } from './src/features/counter/counterSlice';
 import { connect } from 'react-redux';
 import { RootState } from './src/app/store';
 class App extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      header: '',
+      description: '',
+    };
+  }
+
   incrementCount = () => {
     this.props.dispatch(increment());
   };
@@ -12,22 +21,50 @@ class App extends React.Component<any, any> {
     this.props.dispatch(decrement());
   };
 
+  handleHeaderChange = (text: any) => {
+    this.setState({ header: text });
+  };
+
+  handleDescriptionChange = (text: any) => {
+    this.setState({ description: text });
+  };
+
+  handleSubmit = () => {
+    console.log('Header:', this.state.header);
+    console.log('Description:', this.state.description);
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <Button title="increment" onPress={() => this.incrementCount()} />
-        <Text>{this.props.count}</Text>
-        <Button title="decrement" onPress={() => this.decrementCount()} />
-      </View>
+      <SafeAreaView>
+        <View style={{ marginTop: 20 }}>
+          <TextInput
+            style={styles.textBox}
+            placeholder="Header"
+            onChangeText={this.handleHeaderChange}
+            value={this.state.header}
+          />
+          <TextInput
+            style={styles.textBox}
+            placeholder="Description"
+            multiline
+            onChangeText={this.handleDescriptionChange}
+            value={this.state.description}
+          />
+          <Button title="Submit" onPress={this.handleSubmit} />
+        </View>
+      </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  textBox: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingLeft: 10,
   },
 });
 
