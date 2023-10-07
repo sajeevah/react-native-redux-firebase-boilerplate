@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {
   useAddSampleDataMutation,
+  useDeleteSampleDataMutation,
   useFetchSampleDataQuery,
 } from './src/features/sample/sampleSlice';
 
@@ -18,7 +19,9 @@ export default function App() {
   const [header, setHeader] = useState('');
   const [description, setDescription] = useState('');
 
-  const [setAddSampleDataMutation, result] = useAddSampleDataMutation();
+  const [addSampleDataMutation, resultAdd] = useAddSampleDataMutation();
+  const [deleteSampleDataMutation, resultDelete] =
+    useDeleteSampleDataMutation();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data, isLoading, isSuccess, isError, error } =
@@ -27,10 +30,16 @@ export default function App() {
   const handleSubmit = () => {
     console.log('Header:', header);
     console.log('Description:', description);
-    setAddSampleDataMutation({ title: header, description: description });
-    console.log('result:', result);
+    addSampleDataMutation({ title: header, description: description });
+    console.log('result:', resultAdd);
     setHeader('');
     setDescription('');
+  };
+
+  const handleDelete = (id: string) => {
+    console.log('id:', id);
+    deleteSampleDataMutation(id);
+    console.log('result:', resultDelete);
   };
 
   return (
@@ -55,7 +64,17 @@ export default function App() {
         <FlatList
           data={data}
           renderItem={({ item }) => (
-            <Text style={styles.item}>{item.title}</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <Text style={styles.item}>{item.title}</Text>
+              <View style={{ paddingRight: 20 }}>
+                <Button title="Delete" onPress={() => handleDelete(item.id)} />
+              </View>
+            </View>
           )}
         />
       </View>

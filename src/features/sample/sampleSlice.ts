@@ -5,6 +5,7 @@ import {
   getDocs,
   addDoc,
   doc,
+  deleteDoc,
 } from 'firebase/firestore';
 import { db } from '../../../firebase';
 
@@ -65,6 +66,18 @@ export const firestoreApi = createApi({
       },
       invalidatesTags: ['Sample'],
     }),
+    deleteSampleData: builder.mutation({
+      async queryFn(id) {
+        try {
+          await deleteDoc(doc(db, 'sample', id));
+          return { data: null };
+        } catch (error: any) {
+          console.error('Error deleting sample document: ', error.message);
+          return { error: error.message };
+        }
+      },
+      invalidatesTags: ['Sample'],
+    }),
   }),
 });
 
@@ -72,4 +85,5 @@ export const {
   useFetchSampleDataQuery,
   useAddSampleDataMutation,
   useUpdateSampleDataMutation,
+  useDeleteSampleDataMutation,
 } = firestoreApi;
