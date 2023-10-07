@@ -2,12 +2,17 @@
 import React, { useState } from 'react';
 import {
   Button,
+  FlatList,
   SafeAreaView,
   StyleSheet,
+  Text,
   TextInput,
   View,
 } from 'react-native';
-import { useAddSampleDataMutation } from './src/features/sample/sampleSlice';
+import {
+  useAddSampleDataMutation,
+  useFetchSampleDataQuery,
+} from './src/features/sample/sampleSlice';
 
 export default function App() {
   const [header, setHeader] = useState('');
@@ -15,11 +20,17 @@ export default function App() {
 
   const [setAddSampleDataMutation, result] = useAddSampleDataMutation();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data, isLoading, isSuccess, isError, error } =
+    useFetchSampleDataQuery();
+
   const handleSubmit = () => {
     console.log('Header:', header);
     console.log('Description:', description);
     setAddSampleDataMutation({ title: header, description: description });
     console.log('result:', result);
+    setHeader('');
+    setDescription('');
   };
 
   return (
@@ -40,6 +51,14 @@ export default function App() {
         />
         <Button title="Submit" onPress={handleSubmit} />
       </View>
+      <View style={styles.container}>
+        <FlatList
+          data={data}
+          renderItem={({ item }) => (
+            <Text style={styles.item}>{item.title}</Text>
+          )}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -51,5 +70,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingLeft: 10,
+  },
+  container: {
+    paddingTop: 22,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
   },
 });

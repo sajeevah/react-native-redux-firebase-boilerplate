@@ -10,7 +10,7 @@ import { db } from '../../../firebase';
 
 export interface sampleData {
   id: string;
-  titile: string;
+  title: string;
   description: string;
 }
 
