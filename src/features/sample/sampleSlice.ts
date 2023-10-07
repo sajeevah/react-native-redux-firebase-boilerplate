@@ -57,7 +57,7 @@ export const firestoreApi = createApi({
             description,
           });
           console.log('Sample document written with ID: ', docRef.id);
-          return { data: docRef };
+          return { data: null };
         } catch (error: any) {
           console.error('Error adding sample document: ', error.message);
           return { error: error.message };

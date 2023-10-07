@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -7,61 +7,41 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { decrement, increment } from './src/features/counter/counterSlice';
-import { connect } from 'react-redux';
-import { RootState } from './src/app/store';
-class App extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      header: '',
-      description: '',
-    };
-  }
+import { useAddSampleDataMutation } from './src/features/sample/sampleSlice';
 
-  incrementCount = () => {
-    this.props.dispatch(increment());
+export default function App() {
+  const [header, setHeader] = useState('');
+  const [description, setDescription] = useState('');
+
+  const [setAddSampleDataMutation, result] = useAddSampleDataMutation();
+
+  const handleSubmit = () => {
+    console.log('Header:', header);
+    console.log('Description:', description);
+    setAddSampleDataMutation({ title: header, description: description });
+    console.log('result:', result);
   };
 
-  decrementCount = () => {
-    this.props.dispatch(decrement());
-  };
-
-  handleHeaderChange = (text: any) => {
-    this.setState({ header: text });
-  };
-
-  handleDescriptionChange = (text: any) => {
-    this.setState({ description: text });
-  };
-
-  handleSubmit = () => {
-    console.log('Header:', this.state.header);
-    console.log('Description:', this.state.description);
-  };
-
-  render() {
-    return (
-      <SafeAreaView>
-        <View style={{ marginTop: 20 }}>
-          <TextInput
-            style={styles.textBox}
-            placeholder="Header"
-            onChangeText={this.handleHeaderChange}
-            value={this.state.header}
-          />
-          <TextInput
-            style={styles.textBox}
-            placeholder="Description"
-            multiline
-            onChangeText={this.handleDescriptionChange}
-            value={this.state.description}
-          />
-          <Button title="Submit" onPress={this.handleSubmit} />
-        </View>
-      </SafeAreaView>
-    );
-  }
+  return (
+    <SafeAreaView>
+      <View style={{ marginTop: 20 }}>
+        <TextInput
+          style={styles.textBox}
+          placeholder="Header"
+          onChangeText={setHeader}
+          value={header}
+        />
+        <TextInput
+          style={styles.textBox}
+          placeholder="Description"
+          multiline
+          onChangeText={setDescription}
+          value={description}
+        />
+        <Button title="Submit" onPress={handleSubmit} />
+      </View>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -73,26 +53,3 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
 });
-
-const mapStateToProps = (state: RootState) => {
-  return {
-    count: state.counter.value,
-  };
-};
-
-export default connect(mapStateToProps)(App);
-
-// const mapStateToProps = (state) => {
-//   return {
-//     count: state.counter.value
-//   };
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     increment: () => dispatch(increment()),
-//     decrement: () => dispatch(decrement())
-//   };
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(App);
