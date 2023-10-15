@@ -15,7 +15,7 @@ import {
   useFetchSampleDataQuery,
 } from '../features/sample/sampleSlice';
 
-export default function Home() {
+export default function Home({ navigation }) {
   const [header, setHeader] = useState('');
   const [description, setDescription] = useState('');
 
@@ -40,6 +40,10 @@ export default function Home() {
     console.log('id:', id);
     deleteSampleDataMutation(id);
     console.log('result:', resultDelete);
+  };
+
+  const handleLogoutClick = () => {
+    navigation.navigate('Login');
   };
 
   return (
@@ -77,6 +81,9 @@ export default function Home() {
             </View>
           )}
         />
+      </View>
+      <View>
+        <Button title="Logout" onPress={handleLogoutClick} />
       </View>
     </SafeAreaView>
   );
