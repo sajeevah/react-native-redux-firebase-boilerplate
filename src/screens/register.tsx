@@ -10,6 +10,10 @@ export default function Register() {
     console.log(`Email: ${email}, Password: ${password}`);
   };
 
+  const handleGoogleLogin = () => {
+    // Add your Google login logic here
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -27,6 +31,8 @@ export default function Register() {
         onChangeText={setPassword}
       />
       <Button title="Register" onPress={handleRegister} />
+      <View style={styles.buttonSpacing} />
+      <Button title="Google Login" onPress={handleGoogleLogin} />
     </View>
   );
 }
@@ -43,5 +49,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+  },
+  buttonSpacing: {
+    marginBottom: 8,
   },
 });
