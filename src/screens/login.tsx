@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
+// import { useAppDispatch } from '../app/hooks';
+import { auth } from '../../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function Login({ navigation }) {
+  // const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Add your login logic here
     console.log('input email : ', email);
     console.log('input password : ', password);
+    await signInWithEmailAndPassword(auth, email, password);
+    navigation.navigate('Home');
   };
 
   const handleGoogleLogin = () => {
