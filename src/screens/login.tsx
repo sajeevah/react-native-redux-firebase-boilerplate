@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 
 export default function Login({ navigation }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const handleLogin = () => {
     // Add your login logic here
+    console.log('input email : ', email);
+    console.log('input password : ', password);
   };
 
   const handleGoogleLogin = () => {
@@ -20,8 +25,16 @@ export default function Login({ navigation }) {
         style={styles.input}
         placeholder="Email"
         keyboardType="email-address"
+        onChangeText={setEmail}
+        value={email}
       />
-      <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        onChangeText={setPassword}
+        value={password}
+      />
 
       <Button title="Login" onPress={handleLogin} />
       <View style={styles.buttonSpacing} />
