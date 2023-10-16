@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   FlatList,
@@ -14,8 +14,15 @@ import {
   useDeleteSampleDataMutation,
   useFetchSampleDataQuery,
 } from '../features/sample/sampleSlice';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '../../firebase';
+import { User, removeUser, setUser } from '../features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 export default function Home({ navigation }) {
+  const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
+  const dispatch = useAppDispatch();
+
   const [header, setHeader] = useState('');
   const [description, setDescription] = useState('');
 
@@ -42,49 +49,78 @@ export default function Home({ navigation }) {
     console.log('result:', resultDelete);
   };
 
-  const handleLogoutClick = () => {
-    navigation.navigate('Login');
+  const handleLogoutClick = async () => {
+    await signOut(auth);
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        const authUser: User = {
+          displayName: user.displayName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          photoURL: user.photoURL,
+          providerId: user.providerId,
+          uid: user.uid,
+          emailVerified: user.emailVerified,
+        };
+        console.log('authUser : ', authUser);
+        dispatch(setUser(authUser));
+      } else {
+        console.log('removeUser');
+        dispatch(removeUser());
+        navigation.navigate('Login');
+      }
+    });
+  }, [dispatch, navigation]);
 
   return (
     <SafeAreaView>
-      <View style={{ marginTop: 20 }}>
-        <TextInput
-          style={styles.textBox}
-          placeholder="Header"
-          onChangeText={setHeader}
-          value={header}
-        />
-        <TextInput
-          style={styles.textBox}
-          placeholder="Description"
-          multiline
-          onChangeText={setDescription}
-          value={description}
-        />
-        <Button title="Submit" onPress={handleSubmit} />
-      </View>
-      <View style={styles.container}>
-        <FlatList
-          data={data}
-          renderItem={({ item }) => (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={styles.item}>{item.title}</Text>
-              <View style={{ paddingRight: 20 }}>
-                <Button title="Delete" onPress={() => handleDelete(item.id)} />
-              </View>
-            </View>
-          )}
-        />
-      </View>
-      <View>
-        <Button title="Logout" onPress={handleLogoutClick} />
-      </View>
+      {isAuthenticated && (
+        <>
+          <View style={{ marginTop: 20 }}>
+            <TextInput
+              style={styles.textBox}
+              placeholder="Header"
+              onChangeText={setHeader}
+              value={header}
+            />
+            <TextInput
+              style={styles.textBox}
+              placeholder="Description"
+              multiline
+              onChangeText={setDescription}
+              value={description}
+            />
+            <Button title="Submit" onPress={handleSubmit} />
+          </View>
+          <View style={styles.container}>
+            <FlatList
+              data={data}
+              renderItem={({ item }) => (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text style={styles.item}>{item.title}</Text>
+                  <View style={{ paddingRight: 20 }}>
+                    <Button
+                      title="Delete"
+                      onPress={() => handleDelete(item.id)}
+                    />
+                  </View>
+                </View>
+              )}
+            />
+          </View>
+          <View>
+            <Button title="Logout" onPress={handleLogoutClick} />
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 }
