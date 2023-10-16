@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
+import userReducer from '../features/user/userSlice';
 import { firestoreApi } from '../features/sample/sampleSlice';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
+    user: userReducer,
     [firestoreApi.reducerPath]: firestoreApi.reducer,
   },
   middleware: getDefaultMiddleware =>
