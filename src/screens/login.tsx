@@ -18,7 +18,6 @@ export default function Login({ navigation }) {
   };
 
   const handleGoogleLogin = () => {
-    // Add your Google login logic here
   };
 
   const handleRegister = () => {
