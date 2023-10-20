@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 import reactAuth from '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
 import { auth } from '../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function Register({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSigninInProgress, setIsSigninInProgress] = useState(false);
 
   GoogleSignin.configure({
     /**
@@ -30,6 +34,7 @@ export default function Register({ navigation }) {
   };
 
   const handleGoogleLogin = async () => {
+    setIsSigninInProgress(true);
     // Check if your device supports Google Play
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
     // Get the users ID token
@@ -45,9 +50,11 @@ export default function Register({ navigation }) {
       .then(user => {
         console.log('google user : ', user);
         navigation.navigate('Home');
+        setIsSigninInProgress(false);
       })
       .catch(error => {
         console.log('google user : ', error);
+        setIsSigninInProgress(false);
       });
   };
 
@@ -69,7 +76,13 @@ export default function Register({ navigation }) {
       />
       <Button title="Register" onPress={handleRegister} />
       <View style={styles.buttonSpacing} />
-      <Button title="Google Login" onPress={handleGoogleLogin} />
+      {/* <Button title="Google Login" onPress={handleGoogleLogin} /> */}
+      <GoogleSigninButton
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+        onPress={handleGoogleLogin}
+        disabled={isSigninInProgress}
+      />
     </View>
   );
 }
