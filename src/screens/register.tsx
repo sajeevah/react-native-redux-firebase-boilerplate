@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
+import reactAuth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { auth } from '../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function Register({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  GoogleSignin.configure({
+    /**
+     * the webClientId, which can be found in the android/app/google-services.json
+     * file as the client/oauth_client/client_id property (the id ends with .apps.googleusercontent.com).
+     * Make sure to pick the client_id with client_type: 3
+     */
+    webClientId: '',
+  });
 
   const handleRegister = async () => {
     // Add your registration logic here
@@ -18,8 +29,26 @@ export default function Register({ navigation }) {
     }
   };
 
-  const handleGoogleLogin = () => {
-    // Add your Google login logic here
+  const handleGoogleLogin = async () => {
+    // Check if your device supports Google Play
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    // Get the users ID token
+    const { idToken } = await GoogleSignin.signIn();
+
+    // Create a Google credential with the token
+    const googleCredential = reactAuth.GoogleAuthProvider.credential(idToken);
+
+    // Sign-in the user with the credential
+    const userSignIn = reactAuth().signInWithCredential(googleCredential);
+
+    userSignIn
+      .then(user => {
+        console.log('google user : ', user);
+        navigation.navigate('Home');
+      })
+      .catch(error => {
+        console.log('google user : ', error);
+      });
   };
 
   return (

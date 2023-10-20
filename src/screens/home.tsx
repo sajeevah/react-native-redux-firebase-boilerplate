@@ -1,5 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
+import reactAuth from '@react-native-firebase/auth';
 import {
   Button,
   FlatList,
@@ -55,6 +56,28 @@ export default function Home({ navigation }) {
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
+      if (user) {
+        const authUser: User = {
+          displayName: user.displayName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          photoURL: user.photoURL,
+          providerId: user.providerId,
+          uid: user.uid,
+          emailVerified: user.emailVerified,
+        };
+        console.log('authUser : ', authUser);
+        dispatch(setUser(authUser));
+      } else {
+        console.log('removeUser');
+        dispatch(removeUser());
+        navigation.navigate('Login');
+      }
+    });
+  }, [dispatch, navigation]);
+
+  useEffect(() => {
+    reactAuth().onAuthStateChanged(user => {
       if (user) {
         const authUser: User = {
           displayName: user.displayName,
